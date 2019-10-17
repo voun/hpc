@@ -56,7 +56,6 @@ int main(int argc, char *argv[]){
     LINES = atoi(l_string);
     DEGREE = atoi(argv[3]);
 
-
     free(t_string); free(l_string); 
     dt = 4.0/LINES;
     roots = malloc(sizeof(double complex)*(DEGREE+1));
@@ -130,7 +129,7 @@ void *newton_fun(void* restrict arg){
                     }                   
                 }
               
-                else if(normsq < TOL*TOL || a > 10000000000 || b > 10000000000){
+                else if(normsq < TOL*TOL || a > 10000000000 || b > 10000000000 ||  a < -10000000000 || b < - 10000000000){
                                
                     if(iter > 99) 
                         iter = 99;
@@ -191,7 +190,6 @@ void *newton_fun(void* restrict arg){
 
 void *write_fun(void *arg){
 
-        
     char name1[50], name2[50];
     
     struct timespec sleepvalue;
@@ -208,8 +206,7 @@ void *write_fun(void *arg){
     fprintf(conv_ptr, "P3\n%d %d\n100\n", LINES, LINES);
        
     for(unsigned int i = 0; i < LINES;){
-        
-        
+                
         if(attractors_strings[i][LINES*6] == 'N'){ //wait until finished
             nanosleep(&sleepvalue, NULL);
             continue;
@@ -222,7 +219,7 @@ void *write_fun(void *arg){
                
             fwrite(convergences_strings[i], sizeof(char), 9*LINES, conv_ptr);
             fwrite("\n", sizeof(char), 1, conv_ptr);
-                    
+
         }       
     }
     fclose(attr_ptr);
