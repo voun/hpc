@@ -1,0 +1,22 @@
+OpenCL är ett API som används för att kommunicera med olika beräkningsenheter på en dator
+tex FPGA, CPU, GPU. Måste först hitta platformar (NVIDIA, AMD osv) och sen se de tillgängliga enheterna.
+Host <--> device skickar informationen till device som gör beräkningarna. Modellen är att device
+har global memory, constant memory sen massa CU som består av en local memory och massa PE
+(processing elements) som har sitt privata minne. En kernel skickas till device och delar upp
+beräkningen till de olika CU (computational units) som sedan delar vidare work items till PE. tex kan global work space
+vara (100,100) och work group size (10,10). Skickar information från och till device genom buffers. 
+Denna kommunikationen är långsam. Att hämta från global memory är långsam och constant är aningen snabbare.
+Private memory är snabbast och local memory är också snabbt. Ingen automatisk caching eller minnehantering
+utan måste styra den själv (tex om kör på CPU så #CU = 112 och local memory är L1-cache). Finns inget sätt
+för de olika work groupsen att prata med varandra (synkronisering) men i en work group har synkronisering 
+genom barriers. Kör oftast på en GPU som har kanske 1000 kärnor och går då otroligt snabbt. Kan använda GPUn
+med openCL. Vet inte exakt hur en GPU fungerar men vi har våran modell. Kommunikationen mellan host och device
+görs genom buffers och command queue. Denna är async men kan göra sync genom CL_TRUE. Kan ej skicka in dubbel pekare
+utan måste alltid flattea ut array till 1d array. Måste skapa allt minne osv på host som sedan skickas till device.
+
+
+openCL har datatypen vektor som gör att de kan göra SIMD-instruktioner och vektoriserng så går snabbt!
+
+
+reduction är när gör något på en array för att få ett tal (tex sum eller max).
+

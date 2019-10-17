@@ -1,0 +1,11 @@
+A Computer cluster consists of many connected nodes/computers. They have no shared memory and information is sent
+via message passing (MPI). Sending messages is the most expensive operation.
+
+In a GPU there is shared memory between computational units and processing elements within a workgroup.
+Can be viewed as a CPU with many cores. No explicit caching (i.e automatic datahandling for local memory within a workgroup)
+
+1) sequential on CPU
+2) parallel on CPU
+3) GPU
+4) computer cluster
+
