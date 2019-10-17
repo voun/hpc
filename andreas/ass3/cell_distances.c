@@ -4,7 +4,7 @@
 #include <omp.h>
 #include <string.h>
 #include <stdint.h>
-#define BLOCK_SIZE 5000
+#define BLOCK_SIZE 10000
 
 static inline short toInt(char *number);
 
@@ -19,8 +19,8 @@ int main(int argc, char *argv []){
     unsigned int **restrict distances_threads = malloc(N_THREADS*sizeof(unsigned int*));
     for(unsigned short int i = 0; i < N_THREADS; i++)
         distances_threads[i] = calloc(3465, sizeof(unsigned int));
-    unsigned int block1_pos = 0, block2_pos = 0;
 
+    unsigned int block1_pos = 0, block2_pos = 0;
     
     short *restrict x_coords1 = malloc(sizeof(short)*BLOCK_SIZE);                     
     short *restrict y_coords1 = malloc(sizeof(short)*BLOCK_SIZE);
@@ -37,7 +37,7 @@ int main(int argc, char *argv []){
     size_t d1, d2;
     while( (d1 = fread(block1, sizeof(char), BLOCK_SIZE*sizeof(char)*24, ptr_read)) != 0 ){
         
-        unsigned short int lines_to_read1 = d1/24 < BLOCK_SIZE ?  d1/24 : BLOCK_SIZE;
+        unsigned short int lines_to_read1 = d1/24;
         #pragma omp parallel num_threads(N_THREADS)
         {         
             unsigned int *restrict distances_loc = distances_threads[omp_get_thread_num()];
@@ -52,8 +52,7 @@ int main(int argc, char *argv []){
 
             #pragma omp for schedule(dynamic)
             for(unsigned short int i = 0; i < lines_to_read1-1; i++){  
-                       
-                          
+                                                 
                 short p1x = x_coords1[i];
                 short p1y = y_coords1[i];
                 short p1z = z_coords1[i];
@@ -77,14 +76,13 @@ int main(int argc, char *argv []){
         block2_pos = block1_pos+1;
         while( (d2 = fread(block2, sizeof(char), BLOCK_SIZE*sizeof(char)*24, ptr_read)) != 0){
 
-            unsigned short int lines_to_read2 = d2/24 < BLOCK_SIZE ? d2/24 : BLOCK_SIZE;          
+            unsigned short int lines_to_read2 = d2/24;         
             #pragma omp parallel num_threads(N_THREADS)
             {
 
                 unsigned int *restrict distances_loc = distances_threads[omp_get_thread_num()];
                 #pragma omp for schedule(static)
                 for(unsigned short int i = 0; i < lines_to_read2; i++){
-
                     
                     x_coords2[i] = toInt(block2 + 24*i);
                     y_coords2[i] = toInt(block2 + 24*i+8);
@@ -92,7 +90,7 @@ int main(int argc, char *argv []){
                     
                 }
                 
-                #pragma omp for schedule(dynamic)            
+                #pragma omp for schedule(static)            
                 for(unsigned short int i = 0; i < lines_to_read1; i++){
                        
                       
@@ -115,7 +113,6 @@ int main(int argc, char *argv []){
 
             block2_pos++;
             fseek(ptr_read, BLOCK_SIZE*24*block2_pos, SEEK_SET);
-
         }
         block1_pos++;
         fseek(ptr_read, BLOCK_SIZE*24*block1_pos, SEEK_SET);
