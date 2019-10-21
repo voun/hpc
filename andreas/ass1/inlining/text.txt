@@ -1,0 +1,7 @@
+gcc -c separatefile.c; do this in include folder
+gcc -c cpx.c;
+gcc -o separate separatefile.o cpx.o
+./separate
+
+när kompilerar måste veta var ".h" filen finns. Lägg till -I ....
+när gör om till executable måste ha med implementationen när gör om till en executable

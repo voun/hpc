@@ -13,7 +13,7 @@ int main(int argc, char *argv []){
     char *x = argv[1];
     const unsigned short int N_THREADS = atoi(x+2);
     
-    FILE *ptr_read = fopen("test_data/cell_e5", "r");
+    FILE *ptr_read = fopen("test_data/cell_e4", "r");
     //FILE *ptr_read = fopen("cells", "r");
 
     unsigned int **restrict distances_threads = malloc(N_THREADS*sizeof(unsigned int*));
@@ -57,16 +57,14 @@ int main(int argc, char *argv []){
                 short p1y = y_coords1[i];
                 short p1z = z_coords1[i];
                 short p2x, p2y, p2z; 
-                
-                                                          
+                                                                          
                 for(unsigned short int j = i+1; j < lines_to_read1; j++){ 
                    
                     p2x = x_coords1[j];
                     p2y = y_coords1[j];
                     p2z = z_coords1[j];
 
-                    unsigned short int dist = (int)sqrt(((p1x-p2x)*(p1x-p2x) + (p1y-p2y)*(p1y-p2y) + (p1z-p2z)*(p1z-p2z))/100.0);
-                    
+                    unsigned short int dist = (int)sqrt(((p1x-p2x)*(p1x-p2x) + (p1y-p2y)*(p1y-p2y) + (p1z-p2z)*(p1z-p2z))/100.0);                    
                     distances_loc[dist]++; 
                     
                  }
